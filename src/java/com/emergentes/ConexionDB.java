@@ -2,55 +2,41 @@ package com.emergentes;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 
 public class ConexionDB {
-    // Variable para almacenar el driver
-    // private static final String DRIVER = "org.apache.derby.jdbc.ClientDriver";
-    private static final String DRIVER = "com.mysql.jdbc.Driver";
-    // Variable para especificar la base de datos
-    private static final String URL = "jdbc:mysql://localhost:3306/bd_biblio";
-    // Usuario de la BD
-    private static final String USUARIO = "root";
-    // Password de la base de datos
-    private static final String CLAVE = "";
-    
-    public int modificarRegistro(String consultaSQL){
-        
-        Connection conn;
-        Statement sentencia;
-        int filasAfectadas = 0;
-        
-        try{
-            Class.forName(DRIVER);
-            conn = DriverManager.getConnection(URL, USUARIO, CLAVE);
-            sentencia = conn.createStatement();
-            filasAfectadas = sentencia.executeUpdate(consultaSQL);    
-        } catch (ClassNotFoundException e){
-            System.out.println("Error driver " + e.getMessage());
-        } catch (SQLException e) {
-            System.out.println("Error de SQL " + e.getMessage());
-        } 
-        return filasAfectadas;
-    }
-    
-    public ResultSet seleccionarRegistros(String consultaSQL){
-        Connection conn;
-        Statement sentencia;
-        ResultSet filas = null;
-        try{
-            Class.forName(DRIVER);
-            conn = DriverManager.getConnection(URL, USUARIO, CLAVE);
-            sentencia = conn.createStatement();
-            filas = sentencia.executeQuery(consultaSQL);
-            
-        } catch (ClassNotFoundException e){
-            System.out.println("Error Driver " + e.getMessage());
-        } catch (SQLException e){
-            System.out.println("Error de SQL " + e.getMessage());
-        }     
-        return filas;      
-    }   
-}
+   static String url = "jdbc:mysql://localhost:3306/bd_biblio";
+   static String usuario = "root";
+   static String password = "";
+   
+   protected Connection conn = null;
+
+   public ConexionDB() {
+       try {
+           Class.forName("com.mysql.jdbc.Driver");
+           conn = DriverManager.getConnection(url, usuario, password);
+           if (conn != null) {
+               System.out.println("Conexion Ok: " + conn);
+           }
+       } catch (SQLException ex) {
+           System.out.println("Error de SQL: " + ex.getMessage());
+       } catch (ClassNotFoundException ex){
+           System.out.println("Falta Driver: " + ex.getMessage());
+       }
+   }
+   
+   public Connection conectar()
+   {
+       return conn;
+   }
+   
+   public void desconectar()          
+   {
+       System.out.println("Cerrando la BD: " + conn);
+       try {
+           conn.close();
+       } catch (SQLException ex) {
+           System.out.println("Error de SQL: " + ex.getMessage());
+       }
+   }
+} 

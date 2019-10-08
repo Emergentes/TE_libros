@@ -1,9 +1,10 @@
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@page import="com.emergentes.modelo.Libro"%>
 <%@page import="java.util.List"%>
-<%@page import="java.util.ArrayList"%>
-<%@page import="com.emergentes.Libro"%>
-<%@page import="java.sql.SQLException"%>
-<%@page import="com.emergentes.ConexionDB"%>
-<%@page import="java.sql.ResultSet"%>
+<%
+    List<Libro> lista = (List<Libro>) request.getAttribute("lista");
+%>
+
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="es">
@@ -13,7 +14,7 @@
     </head>
     <body>
         <h1>Listado de libros</h1>
-        <p><a href="nuevo.jsp">Nuevo</a></p>
+        <p><a href="MainController?op=nuevo">Nuevo</a></p>
         <table border="1">
             <tr>
                 <th>ISBN</th>
@@ -21,22 +22,14 @@
                 <th>Categoria</th>
                 <th></th>
             </tr>
-        <%
-            List<Libro> lista = null;
-            
-            lista = Libro.getAll();
-            
-            for(Libro libro : lista){
-        %>
-        <tr>
-            <td><%=libro.getIsbn()%></td>
-            <td><%=libro.getTitulo()%></td>
-            <td><%=libro.getCategoria()%></td>
-            <td><a href="elimina.jsp?id=<%=libro.getId()%>">Eliminar</a></td>
-        </tr>
-        <%
-            }
-        %>
+            <c:forEach var="item" items="${lista}">
+                <tr>
+                    <td>${item.isbn}</td>
+                    <td>${item.titulo}</td>
+                    <td>${item.categoria}</td>
+                    <td><a href="MainController?op=eliminar&id=${item.id}">Eliminar</a></td>
+                </tr>
+            </c:forEach>            
         </table>
 
     </body>
